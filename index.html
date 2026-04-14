@@ -6,58 +6,44 @@
     <title>Coffee Passport</title>
     <style>
         :root { --p: #2e241f; --bg: #f7f6f5; --a: #99714a; --b: #e4e2df; --w: #fff; --sub: #8c8882; --light_v: #fcfaf8; }
-        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--p); padding: 40px; max-width: 1000px; margin: auto; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--p); padding: 40px; max-width: 1000px; margin: auto; line-height: 1.5; -webkit-font-smoothing: antialiased; }
         
-        /* The main bento container */
         .bento-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
         .bento-box { background: var(--w); padding: 20px; border-radius: 12px; border: 1px solid var(--b); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         
-        /* Header Bento (Row 1) */
         .header-title-box { grid-column: span 2; display: flex; flex-direction: column; justify-content: center; background: #3d3430; color: #fff; }
         h1 { font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: -1.5px; margin: 0; }
         
-        /* Stats Bento */
         .stat-group { grid-column: span 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .stat-box { background: var(--w); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 12px; border: 1px solid var(--b); text-align: center; }
         .stat-box p { font-size: 34px; font-weight: 800; color: var(--a); margin: 0; }
         .stat-box small { font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--sub); letter-spacing: 0.8px; margin-top: 5px; }
         
-        /* Actions */
-        .export-btn { background: none; color: var(--w); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: 0.2s; max-width: fit-content; margin-top: 10px; }
+        .export-btn { background: none; color: var(--w); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; cursor: pointer; border-radius: 4px; margin-top: 10px; width: fit-content; }
         .export-btn:hover { background: rgba(255,255,255,0.1); }
 
-        /* Form Bento (Row 2) */
         form { background: var(--w); padding: 25px; border-radius: 12px; border: 1px solid var(--b); grid-column: span 4; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        input, select { padding: 12px; border: 1px solid var(--b); border-radius: 8px; font-size: 13px; font-weight: 500; outline: none; transition: 0.2s; }
-        input:focus, select:focus { border-color: var(--a); }
+        input { padding: 12px; border: 1px solid var(--b); border-radius: 8px; font-size: 13px; font-weight: 500; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--a); }
         
-        /* Large Highlighted Box */
-        .full-width { grid-column: span 4; }
-        input#name { font-size: 16px; font-weight: 700; border-width: 1px; color: var(--p); grid-column: span 2; }
+        input#name { font-size: 16px; font-weight: 700; grid-column: span 2; }
+        input#roaster { grid-column: span 1; }
+        input#country { grid-column: span 1; }
         
-        /* Small detail row */
-        input#roaster, select#country { grid-column: span 1; }
-        
-        /* Variety/Process row */
         .variety-group { grid-column: span 2; display: grid; grid-template-columns: 2fr 1fr; gap: 8px; background: var(--light_v); padding: 10px; border-radius: 8px; }
         input#variety, input#species { grid-column: span 1; border: none; }
-        input#species { color: var(--a); font-size: 11px; text-transform: uppercase; font-weight: 600; padding: 0 5px; background: none; cursor: default; }
+        input#species { color: var(--a); font-size: 11px; text-transform: uppercase; font-weight: 600; background: none; }
 
-        input#altitude { grid-column: span 1; }
-        input#process { grid-column: span 1; }
+        #addBtn { background: var(--p); color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; border: none; padding: 14px; cursor: pointer; border-radius: 8px; grid-column: span 4; font-size: 12px; margin-top: 10px; }
+        #addBtn:hover { background: var(--a); }
 
-        button#addBtn { background: var(--p); color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; border: none; padding: 14px; cursor: pointer; border-radius: 8px; grid-column: span 4; font-size: 12px; margin-top: 10px; }
-        button#addBtn:hover { background: var(--a); }
-
-        /* Table (Display below Bento) */
-        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; background: var(--w); border-radius: 12px; border: 1px solid var(--b); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; background: var(--w); border-radius: 12px; border: 1px solid var(--b); overflow: hidden; }
         th { text-align: left; padding: 15px; font-size: 11px; text-transform: uppercase; color: var(--sub); font-weight: 700; letter-spacing: 1px; border-bottom: 1px solid var(--b); }
-        td { padding: 15px; border-bottom: 1px solid var(--b); font-size: 14px; font-weight: 500; color: #444; }
-        tr:last-child td { border-bottom: none; }
+        td { padding: 15px; border-bottom: 1px solid var(--b); font-size: 14px; color: #444; }
         
-        .c-origin { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .c-origin { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; }
         .c-roaster { font-size: 11px; color: var(--a); font-weight: 700; }
-        .c-species { font-size: 11px; font-weight: 700; color: var(--a); text-transform: uppercase; display: inline-block; background: var(--light_v); padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        .c-species { font-size: 11px; font-weight: 700; color: var(--a); text-transform: uppercase; background: var(--light_v); padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -77,31 +63,21 @@
 
 <div class="bento-container">
     <form id="coffeeForm">
-        <input type="text" id="name" placeholder="Coffee Name (e.g. Worka Sakaro)" required>
+        <input type="text" id="name" placeholder="Coffee Name" required>
         <input type="text" id="roaster" placeholder="Roaster" required>
-        
-        <select id="country" required>
-            <option value="" disabled selected>Select Origin</option>
-            <option value="Brazil">Brazil</option>
-            <option value="Colombia">Colombia</option>
-            <option value="Ethiopia">Ethiopia</option>
-            <option value="Panama">Panama</option>
-            <option value="Kenya">Kenya</option>
-            <option value="Malaysia">Malaysia</option>
-            <option value="Vietnam">Vietnam</option>
-            </select>
+        <input type="text" id="country" placeholder="Country" required>
         
         <input type="text" id="region" placeholder="Region">
         <input type="text" id="altitude" placeholder="Altitude">
         
         <div class="variety-group">
-            <input type="text" id="variety" placeholder="Variety (e.g. Gesha)" oninput="detectSpecies()" required>
-            <input type="text" id="species" placeholder="Auto" readonly tabindex="-1">
+            <input type="text" id="variety" placeholder="Variety (e.g. Sidra)" oninput="detectSpecies()" required>
+            <input type="text" id="species" placeholder="Auto Species" readonly tabindex="-1">
         </div>
         
         <input type="text" id="process" placeholder="Process">
         
-        <button type="submit" id="addBtn">Add Entry to Passport</button>
+        <button type="submit" id="addBtn">Add to Passport</button>
     </form>
 </div>
 
@@ -109,8 +85,8 @@
     <thead>
         <tr>
             <th>Name & Roaster</th>
-            <th>Origin & Region</th>
-            <th>Variety</th>
+            <th>Origin</th>
+            <th>Variety & Species</th>
             <th>Process</th>
             <th>Altitude</th>
         </tr>
@@ -122,46 +98,43 @@
     const speciesMap = {
         'bourbon': 'Arabica', 'typica': 'Arabica', 'gesha': 'Arabica', 'geisha': 'Arabica', 
         'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'sl34': 'Arabica',
-        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica', 'colombia': 'Arabica',
-        'sidra': 'Arabica', 'catimor': 'Hybrid', 'conilon': 'Robusta', 'canephora': 'Robusta'
+        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica',
+        'liberica': 'Liberica', 'excelsa': 'Liberica', 'conilon': 'Robusta'
     };
 
     let coffees = JSON.parse(localStorage.getItem('myCoffees')) || [];
 
     function detectSpecies() {
-        const varInput = document.getElementById('variety').value.toLowerCase().trim();
-        document.getElementById('species').value = speciesMap[varInput] || "Arabica (Assumed)";
+        const val = document.getElementById('variety').value.toLowerCase().trim();
+        document.getElementById('species').value = speciesMap[val] || "Arabica (Assumed)";
     }
 
     function updateUI() {
         const tbody = document.querySelector('#coffeeTable tbody');
         tbody.innerHTML = '';
-        const countries = new Set();
-        const varieties = new Set();
-        const processes = new Set();
+        const stats = { countries: new Set(), varieties: new Set(), processes: new Set() };
 
         coffees.forEach(c => {
-            const row = `<tr>
+            tbody.innerHTML += `<tr>
                 <td><strong>${c.name}</strong><br><span class="c-roaster">${c.roaster}</span></td>
                 <td><div class="c-origin">${c.country}</div><small>${c.region}</small></td>
                 <td>${c.variety}<br><span class="c-species">${c.species}</span></td>
                 <td>${c.process}</td>
                 <td>${c.altitude}</td>
             </tr>`;
-            tbody.innerHTML += row;
-            if(c.country) countries.add(c.country);
-            if(c.variety) varieties.add(c.variety);
-            if(c.process) processes.add(c.process.toLowerCase().trim());
+            stats.countries.add(c.country.toLowerCase().trim());
+            stats.varieties.add(c.variety.toLowerCase().trim());
+            stats.processes.add(c.process.toLowerCase().trim());
         });
 
-        document.getElementById('stat-countries').innerText = countries.size;
-        document.getElementById('stat-varieties').innerText = varieties.size;
-        document.getElementById('stat-processes').innerText = processes.size;
+        document.getElementById('stat-countries').innerText = stats.countries.size;
+        document.getElementById('stat-varieties').innerText = stats.varieties.size;
+        document.getElementById('stat-processes').innerText = stats.processes.size;
     }
 
     document.getElementById('coffeeForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        const newCoffee = {
+        const data = {
             name: document.getElementById('name').value,
             roaster: document.getElementById('roaster').value,
             country: document.getElementById('country').value,
@@ -171,7 +144,7 @@
             species: document.getElementById('species').value,
             process: document.getElementById('process').value,
         };
-        coffees.push(newCoffee);
+        coffees.push(data);
         localStorage.setItem('myCoffees', JSON.stringify(coffees));
         updateUI();
         e.target.reset();
@@ -179,16 +152,13 @@
     });
 
     function exportToCSV() {
-        if (coffees.length === 0) return alert("No data to export!");
         let csv = "Name,Roaster,Country,Region,Altitude,Variety,Species,Process\n";
-        coffees.forEach(c => {
-            csv += `"${c.name}","${c.roaster}","${c.country}","${c.region}","${c.altitude}","${c.variety}","${c.species}","${c.process}"\n`;
-        });
+        coffees.forEach(c => { csv += `"${c.name}","${c.roaster}","${c.country}","${c.region}","${c.altitude}","${c.variety}","${c.species}","${c.process}"\n`; });
         const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'coffee_passport_data.csv';
+        a.download = 'coffee_passport.csv';
         a.click();
     }
 
