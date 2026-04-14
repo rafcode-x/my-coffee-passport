@@ -1,216 +1,143 @@
-import pandas as pd
-from weasyprint import HTML
-
-# Defining a mapping for common Coffee Varieties to their Species (Arabica, Robusta, etc.)
-# This will be used in the logic for the "automatic" species assignment.
-variety_to_species = {
-    "Bourbon": "Arabica",
-    "Typica": "Arabica",
-    "Caturra": "Arabica",
-    "Catuai": "Arabica",
-    "Geisha": "Arabica",
-    "Gesha": "Arabica",
-    "SL28": "Arabica",
-    "SL34": "Arabica",
-    "Pacamara": "Arabica",
-    "Maragogype": "Arabica",
-    "Ethiopian Landrace": "Arabica",
-    "Heirloom": "Arabica",
-    "Mundo Novo": "Arabica",
-    "Yellow Bourbon": "Arabica",
-    "Red Bourbon": "Arabica",
-    "Pink Bourbon": "Arabica",
-    "Sidra": "Arabica",
-    "Batian": "Arabica",
-    "Ruiru 11": "Arabica",
-    "Castillo": "Arabica",
-    "Colombia": "Arabica",
-    "Java": "Arabica",
-    "Pacas": "Arabica",
-    "Tekisic": "Arabica",
-    "Villalobos": "Arabica",
-    "Sarchimor": "Arabica",
-    "Catimor": "Arabica",
-    "Obata": "Arabica",
-    "Marsellesa": "Arabica",
-    "Pache": "Arabica",
-    "Kona": "Arabica",
-    "Blue Mountain": "Arabica",
-    "Hibrido de Timor": "Arabica/Robusta Hybrid",
-    "Conilon": "Robusta",
-    "Canephora": "Robusta",
-    "Excelsa": "Liberica",
-    "Liberica": "Liberica",
-    "Stenophylla": "Stenophylla"
-}
-
-# 1. Create a Sample CSV for the user to download
-data = [
-    {"Roaster": "Apollo Coffee", "Name": "Worka Sakaro", "Country": "Ethiopia", "Region": "Gedeb", "Altitude": "2000m", "Variety": "Heirloom", "Process": "Washed"},
-    {"Roaster": "Luna Beans", "Name": "El Paraiso", "Country": "Colombia", "Region": "Cauca", "Altitude": "1900m", "Variety": "Castillo", "Process": "Anaerobic"},
-    {"Roaster": "Terra Nova", "Name": "Fazenda Rainha", "Country": "Brazil", "Region": "Mogiana", "Altitude": "1100m", "Variety": "Yellow Bourbon", "Process": "Natural"},
-    {"Roaster": "Onyx", "Name": "Tropicalia", "Country": "Panama", "Region": "Chiriqui", "Altitude": "1700m", "Variety": "Gesha", "Process": "Honey"}
-]
-
-df = pd.DataFrame(data)
-df['Species'] = df['Variety'].map(variety_to_species).fillna('Arabica (Assumed)')
-df.to_csv('coffee_catalog.csv', index=False)
-
-# 2. Create the HTML/UI Template for the Coffee Passport App
-html_content = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Passport & Catalog</title>
+    <title>Coffee Passport</title>
     <style>
-        @page {{
-            size: A4;
-            margin: 0;
-            background-color: #fcfaf7;
-        }}
-        body {{
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            color: #3e2723;
-            margin: 0;
-            padding: 40px;
-            background-color: #fcfaf7;
-        }}
-        .header {{
-            border-bottom: 2px solid #8d6e63;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }}
-        h1 {{
-            font-size: 24pt;
-            margin: 0;
-            letter-spacing: -1px;
-            color: #4e342e;
-        }}
-        .passport-stats {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
-        }}
-        .stat-card {{
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #d7ccc8;
-            text-align: center;
-        }}
-        .stat-card h2 {{
-            font-size: 10pt;
-            text-transform: uppercase;
-            color: #a1887f;
-            margin: 0 0 10px 0;
-        }}
-        .stat-card p {{
-            font-size: 28pt;
-            font-weight: bold;
-            margin: 0;
-            color: #5d4037;
-        }}
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-        }}
-        th {{
-            text-align: left;
-            background-color: #efebe9;
-            padding: 12px;
-            font-size: 9pt;
-            text-transform: uppercase;
-            border-bottom: 2px solid #d7ccc8;
-        }}
-        td {{
-            padding: 12px;
-            font-size: 10pt;
-            border-bottom: 1px solid #efebe9;
-        }}
-        .tag {{
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 8pt;
-            background: #f5f5f5;
-            color: #757575;
-        }}
-        .variety-species {{
-            display: block;
-            font-size: 8pt;
-            color: #8d6e63;
-            margin-top: 4px;
-        }}
+        :root { --primary: #4e342e; --bg: #fcfaf7; --accent: #8d6e63; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--primary); padding: 20px; max-width: 900px; margin: auto; }
+        .header { border-bottom: 2px solid var(--accent); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-box { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
+        .stat-box span { display: block; font-size: 24px; font-weight: bold; }
+        
+        form { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .full-width { grid-column: span 2; }
+        button { background: var(--primary); color: white; cursor: pointer; border: none; }
+        button:hover { background: var(--accent); }
+        .export-btn { background: #2e7d32; margin-top: 10px; }
+
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #efebe9; font-size: 12px; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>COFFEE PASSPORT</h1>
-        <span>Live Catalog View</span>
-    </div>
 
-    <div class="passport-stats">
-        <div class="stat-card">
-            <h2>Countries</h2>
-            <p>03</p>
-        </div>
-        <div class="stat-card">
-            <h2>Varieties</h2>
-            <p>04</p>
-        </div>
-        <div class="stat-card">
-            <h2>Processes</h2>
-            <p>03</p>
-        </div>
-    </div>
+<div class="header">
+    <h1>COFFEE PASSPORT</h1>
+    <button class="export-btn" onclick="exportToCSV()">Export to CSV</button>
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Roaster / Name</th>
-                <th>Origin (Country/Region)</th>
-                <th>Altitude</th>
-                <th>Variety & Species</th>
-                <th>Process</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Apollo Coffee</strong><br>Worka Sakaro</td>
-                <td>Ethiopia<br><span class="tag">Gedeb</span></td>
-                <td>2000m</td>
-                <td>Heirloom<br><span class="variety-species">Species: Arabica</span></td>
-                <td>Washed</td>
-            </tr>
-            <tr>
-                <td><strong>Luna Beans</strong><br>El Paraiso</td>
-                <td>Colombia<br><span class="tag">Cauca</span></td>
-                <td>1900m</td>
-                <td>Castillo<br><span class="variety-species">Species: Arabica</span></td>
-                <td>Anaerobic</td>
-            </tr>
-            <tr>
-                <td><strong>Onyx</strong><br>Tropicalia</td>
-                <td>Panama<br><span class="tag">Chiriqui</span></td>
-                <td>1700m</td>
-                <td>Gesha<br><span class="variety-species">Species: Arabica</span></td>
-                <td>Honey</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="stats">
+    <div class="stat-box">Countries<span id="stat-countries">0</span></div>
+    <div class="stat-box">Varieties<span id="stat-varieties">0</span></div>
+    <div class="stat-box">Processes<span id="stat-processes">0</span></div>
+</div>
+
+<form id="coffeeForm">
+    <input type="text" id="roaster" placeholder="Roaster" required>
+    <input type="text" id="name" placeholder="Coffee Name" required>
+    <input type="text" id="country" placeholder="Country" required>
+    <input type="text" id="region" placeholder="Region">
+    <input type="text" id="altitude" placeholder="Altitude (e.g. 1800m)">
+    <input type="text" id="variety" placeholder="Variety (e.g. Gesha, Bourbon)" oninput="detectSpecies()">
+    <input type="text" id="species" placeholder="Species (Auto-detected)" readonly>
+    <select id="process">
+        <option value="Washed">Washed</option>
+        <option value="Natural">Natural</option>
+        <option value="Honey">Honey</option>
+        <option value="Anaerobic">Anaerobic</option>
+    </select>
+    <button type="submit" class="full-width">Add to Passport</button>
+</form>
+
+<table id="coffeeTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Origin</th>
+            <th>Variety</th>
+            <th>Species</th>
+            <th>Process</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const speciesMap = {
+        'bourbon': 'Arabica', 'typica': 'Arabica', 'gesha': 'Arabica', 'geisha': 'Arabica', 
+        'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'heirloom': 'Arabica',
+        'canephora': 'Robusta', 'conilon': 'Robusta', 'excelsa': 'Liberica'
+    };
+
+    let coffees = JSON.parse(localStorage.getItem('myCoffees')) || [];
+
+    function detectSpecies() {
+        const varInput = document.getElementById('variety').value.toLowerCase();
+        document.getElementById('species').value = speciesMap[varInput] || "Arabica (Likely)";
+    }
+
+    function updateUI() {
+        const tbody = document.querySelector('#coffeeTable tbody');
+        tbody.innerHTML = '';
+        const countries = new Set();
+        const varieties = new Set();
+        const processes = new Set();
+
+        coffees.forEach(c => {
+            const row = `<tr>
+                <td><strong>${c.roaster}</strong><br>${c.name}</td>
+                <td>${c.country}<br><small>${c.region}</small></td>
+                <td>${c.variety}</td>
+                <td>${c.species}</td>
+                <td>${c.process}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+            countries.add(c.country);
+            varieties.add(c.variety);
+            processes.add(c.process);
+        });
+
+        document.getElementById('stat-countries').innerText = countries.size;
+        document.getElementById('stat-varieties').innerText = varieties.size;
+        document.getElementById('stat-processes').innerText = processes.size;
+    }
+
+    document.getElementById('coffeeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newCoffee = {
+            roaster: document.getElementById('roaster').value,
+            name: document.getElementById('name').value,
+            country: document.getElementById('country').value,
+            region: document.getElementById('region').value,
+            variety: document.getElementById('variety').value,
+            species: document.getElementById('species').value,
+            process: document.getElementById('process').value,
+        };
+        coffees.push(newCoffee);
+        localStorage.setItem('myCoffees', JSON.stringify(coffees));
+        updateUI();
+        e.target.reset();
+    });
+
+    function exportToCSV() {
+        let csv = "Roaster,Name,Country,Region,Variety,Species,Process\n";
+        coffees.forEach(c => {
+            csv += `${c.roaster},${c.name},${c.country},${c.region},${c.variety},${c.species},${c.process}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', 'my_coffee_catalog.csv');
+        a.click();
+    }
+
+    updateUI();
+</script>
 </body>
 </html>
-"""
-
-with open('coffee_passport_ui.html', 'w') as f:
-    f.write(html_content)
-
-HTML(filename='coffee_passport_ui.html').write_pdf('coffee_passport_guide.pdf')
