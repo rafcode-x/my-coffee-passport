@@ -95,20 +95,45 @@
 </table>
 
 <script>
+    // Expanded mapping to ensure Robusta and Hybrids are caught
     const speciesMap = {
+        // Arabica Varieties
         'bourbon': 'Arabica', 'typica': 'Arabica', 'gesha': 'Arabica', 'geisha': 'Arabica', 
         'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'sl34': 'Arabica',
-        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica',
-        'liberica': 'Liberica', 'excelsa': 'Liberica', 'conilon': 'Robusta'
+        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica', 'colombia': 'Arabica',
+        'sidra': 'Arabica', 'mundo novo': 'Arabica', 'maragogype': 'Arabica',
+        
+        // Robusta Varieties
+        'robusta': 'Robusta', 'canephora': 'Robusta', 'conilon': 'Robusta',
+        
+        // Rare / Others
+        'liberica': 'Liberica', 'excelsa': 'Liberica', 'stenophylla': 'Stenophylla',
+        
+        // Common Hybrids
+        'catimor': 'Hybrid (HdT)', 'sarchimor': 'Hybrid', 'jember': 'Hybrid'
     };
 
     let coffees = JSON.parse(localStorage.getItem('myCoffees')) || [];
 
     function detectSpecies() {
         const val = document.getElementById('variety').value.toLowerCase().trim();
-        document.getElementById('species').value = speciesMap[val] || "Arabica (Assumed)";
+        
+        // Check if the variety name *contains* a known species word (like "robusta")
+        // or matches a specific variety in our map
+        let detected = "Arabica (Assumed)";
+        
+        if (val.includes('robusta') || val === 'canephora' || val === 'conilon') {
+            detected = "Robusta";
+        } else if (val.includes('liberica') || val === 'excelsa') {
+            detected = "Liberica";
+        } else if (speciesMap[val]) {
+            detected = speciesMap[val];
+        }
+
+        document.getElementById('species').value = detected;
     }
 
+    // ... (keep the rest of your updateUI, submit, and export functions the same)
     function updateUI() {
         const tbody = document.querySelector('#coffeeTable tbody');
         tbody.innerHTML = '';
