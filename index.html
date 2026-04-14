@@ -5,63 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coffee Passport</title>
     <style>
-        :root { --primary: #4e342e; --bg: #fcfaf7; --accent: #8d6e63; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--primary); padding: 20px; max-width: 900px; margin: auto; }
-        .header { border-bottom: 2px solid var(--accent); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
-        .stat-box { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
-        .stat-box span { display: block; font-size: 24px; font-weight: bold; }
+        :root { --primary: #3d2b1f; --bg: #fdfcfb; --accent: #a67c52; --border: #e0d7d0; }
+        body { font-family: 'Georgia', serif; background: var(--bg); color: var(--primary); padding: 40px 20px; max-width: 900px; margin: auto; line-height: 1.6; }
         
-        form { background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .header { border-bottom: 3px solid var(--primary); margin-bottom: 30px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 32px; margin: 0; letter-spacing: -1px; text-transform: uppercase; }
+        
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-box { background: #fff; padding: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 2px 2px 0px var(--border); }
+        .stat-box small { text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: var(--accent); font-family: sans-serif; font-weight: bold; }
+        .stat-box span { display: block; font-size: 32px; font-weight: bold; font-family: sans-serif; }
+        
+        form { background: #fff; padding: 25px; border: 1px solid var(--border); margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, button { padding: 12px; border: 1px solid var(--border); font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: var(--accent); }
         .full-width { grid-column: span 2; }
-        button { background: var(--primary); color: white; cursor: pointer; border: none; }
+        
+        button { background: var(--primary); color: white; cursor: pointer; border: none; text-transform: uppercase; font-weight: bold; font-size: 12px; letter-spacing: 1px; transition: 0.2s; }
         button:hover { background: var(--accent); }
-        .export-btn { background: #2e7d32; margin-top: 10px; }
+        .export-btn { background: none; color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; }
+        .export-btn:hover { background: var(--accent); color: white; }
 
-        table { width: 100%; border-collapse: collapse; background: #fff; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        th { background: #efebe9; font-size: 12px; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; border-bottom: 2px solid var(--primary); padding: 10px; font-size: 12px; text-transform: uppercase; font-family: sans-serif; }
+        td { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; }
+        .roaster-name { font-family: sans-serif; font-weight: bold; text-transform: uppercase; font-size: 13px; color: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>COFFEE PASSPORT</h1>
-    <button class="export-btn" onclick="exportToCSV()">Export to CSV</button>
+    <h1>Coffee Passport</h1>
+    <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
 </div>
 
 <div class="stats">
-    <div class="stat-box">Countries<span id="stat-countries">0</span></div>
-    <div class="stat-box">Varieties<span id="stat-varieties">0</span></div>
-    <div class="stat-box">Processes<span id="stat-processes">0</span></div>
+    <div class="stat-box"><small>Countries</small><span id="stat-countries">0</span></div>
+    <div class="stat-box"><small>Varieties</small><span id="stat-varieties">0</span></div>
+    <div class="stat-box"><small>Processes</small><span id="stat-processes">0</span></div>
 </div>
 
 <form id="coffeeForm">
-    <input type="text" id="roaster" placeholder="Roaster" required>
-    <input type="text" id="name" placeholder="Coffee Name" required>
-    <input type="text" id="country" placeholder="Country" required>
-    <input type="text" id="region" placeholder="Region">
-    <input type="text" id="altitude" placeholder="Altitude (e.g. 1800m)">
-    <input type="text" id="variety" placeholder="Variety (e.g. Gesha, Bourbon)" oninput="detectSpecies()">
+    <input type="text" id="roaster" placeholder="Roaster (e.g. Apollo)" required>
+    <input type="text" id="name" placeholder="Coffee Name (e.g. Worka Sakaro)" required>
+    
+    <select id="country" required>
+        <option value="" disabled selected>Select Country</option>
+        <option value="Brazil">Brazil</option>
+        <option value="Colombia">Colombia</option>
+        <option value="Ethiopia">Ethiopia</option>
+        <option value="Honduras">Honduras</option>
+        <option value="Indonesia">Indonesia</option>
+        <option value="Kenya">Kenya</option>
+        <option value="Malaysia">Malaysia</option>
+        <option value="Mexico">Mexico</option>
+        <option value="Panama">Panama</option>
+        <option value="Peru">Peru</option>
+        <option value="Rwanda">Rwanda</option>
+        <option value="Thailand">Thailand</option>
+        <option value="Vietnam">Vietnam</option>
+        <option value="Yemen">Yemen</option>
+        </select>
+    
+    <input type="text" id="region" placeholder="Region (e.g. Yirgacheffe)">
+    <input type="text" id="altitude" placeholder="Altitude (e.g. 1950m)">
+    <input type="text" id="variety" placeholder="Variety (e.g. Sidra)" oninput="detectSpecies()">
     <input type="text" id="species" placeholder="Species (Auto-detected)" readonly>
-    <select id="process">
-        <option value="Washed">Washed</option>
-        <option value="Natural">Natural</option>
-        <option value="Honey">Honey</option>
-        <option value="Anaerobic">Anaerobic</option>
-    </select>
-    <button type="submit" class="full-width">Add to Passport</button>
+    <input type="text" id="process" placeholder="Process (e.g. Carbonic Maceration)">
+    
+    <button type="submit" class="full-width">Add Entry</button>
 </form>
 
 <table id="coffeeTable">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Origin</th>
-            <th>Variety</th>
-            <th>Species</th>
+            <th>Origin / Roaster</th>
+            <th>Variety & Species</th>
             <th>Process</th>
+            <th>Altitude</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -70,14 +91,15 @@
 <script>
     const speciesMap = {
         'bourbon': 'Arabica', 'typica': 'Arabica', 'gesha': 'Arabica', 'geisha': 'Arabica', 
-        'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'heirloom': 'Arabica',
-        'canephora': 'Robusta', 'conilon': 'Robusta', 'excelsa': 'Liberica'
+        'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'sl34': 'Arabica',
+        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica',
+        'canephora': 'Robusta', 'conilon': 'Robusta', 'excelsa': 'Liberica', 'liberica': 'Liberica'
     };
 
     let coffees = JSON.parse(localStorage.getItem('myCoffees')) || [];
 
     function detectSpecies() {
-        const varInput = document.getElementById('variety').value.toLowerCase();
+        const varInput = document.getElementById('variety').value.toLowerCase().trim();
         document.getElementById('species').value = speciesMap[varInput] || "Arabica (Likely)";
     }
 
@@ -90,16 +112,19 @@
 
         coffees.forEach(c => {
             const row = `<tr>
-                <td><strong>${c.roaster}</strong><br>${c.name}</td>
-                <td>${c.country}<br><small>${c.region}</small></td>
-                <td>${c.variety}</td>
-                <td>${c.species}</td>
+                <td>
+                    <div class="roaster-name">${c.roaster}</div>
+                    <strong>${c.name}</strong><br>
+                    <small>${c.country}, ${c.region}</small>
+                </td>
+                <td>${c.variety}<br><small style="color:var(--accent)">${c.species}</small></td>
                 <td>${c.process}</td>
+                <td>${c.altitude}</td>
             </tr>`;
             tbody.innerHTML += row;
-            countries.add(c.country);
-            varieties.add(c.variety);
-            processes.add(c.process);
+            if(c.country) countries.add(c.country);
+            if(c.variety) varieties.add(c.variety);
+            if(c.process) processes.add(c.process.toLowerCase().trim());
         });
 
         document.getElementById('stat-countries').innerText = countries.size;
@@ -114,6 +139,7 @@
             name: document.getElementById('name').value,
             country: document.getElementById('country').value,
             region: document.getElementById('region').value,
+            altitude: document.getElementById('altitude').value,
             variety: document.getElementById('variety').value,
             species: document.getElementById('species').value,
             process: document.getElementById('process').value,
@@ -122,18 +148,20 @@
         localStorage.setItem('myCoffees', JSON.stringify(coffees));
         updateUI();
         e.target.reset();
+        document.getElementById('species').value = '';
     });
 
     function exportToCSV() {
-        let csv = "Roaster,Name,Country,Region,Variety,Species,Process\n";
+        if (coffees.length === 0) return alert("No data to export!");
+        let csv = "Roaster,Name,Country,Region,Altitude,Variety,Species,Process\n";
         coffees.forEach(c => {
-            csv += `${c.roaster},${c.name},${c.country},${c.region},${c.variety},${c.species},${c.process}\n`;
+            csv += `"${c.roaster}","${c.name}","${c.country}","${c.region}","${c.altitude}","${c.variety}","${c.species}","${c.process}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.setAttribute('href', url);
-        a.setAttribute('download', 'my_coffee_catalog.csv');
+        a.href = url;
+        a.download = 'coffee_passport_export.csv';
         a.click();
     }
 
