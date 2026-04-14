@@ -5,82 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coffee Passport</title>
     <style>
-        :root { --primary: #3d2b1f; --bg: #fdfcfb; --accent: #a67c52; --border: #e0d7d0; }
-        body { font-family: 'Georgia', serif; background: var(--bg); color: var(--primary); padding: 40px 20px; max-width: 900px; margin: auto; line-height: 1.6; }
+        :root { --p: #2e241f; --bg: #f7f6f5; --a: #99714a; --b: #e4e2df; --w: #fff; --sub: #8c8882; --light_v: #fcfaf8; }
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--p); padding: 40px; max-width: 1000px; margin: auto; line-height: 1.5; -webkit-font-smoothing: antialiased; }
         
-        .header { border-bottom: 3px solid var(--primary); margin-bottom: 30px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
-        h1 { font-size: 32px; margin: 0; letter-spacing: -1px; text-transform: uppercase; }
+        /* The main bento container */
+        .bento-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .bento-box { background: var(--w); padding: 20px; border-radius: 12px; border: 1px solid var(--b); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
-        .stat-box { background: #fff; padding: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 2px 2px 0px var(--border); }
-        .stat-box small { text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: var(--accent); font-family: sans-serif; font-weight: bold; }
-        .stat-box span { display: block; font-size: 32px; font-weight: bold; font-family: sans-serif; }
+        /* Header Bento (Row 1) */
+        .header-title-box { grid-column: span 2; display: flex; flex-direction: column; justify-content: center; background: #3d3430; color: #fff; }
+        h1 { font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: -1.5px; margin: 0; }
         
-        form { background: #fff; padding: 25px; border: 1px solid var(--border); margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select, button { padding: 12px; border: 1px solid var(--border); font-size: 14px; outline: none; }
-        input:focus, select:focus { border-color: var(--accent); }
-        .full-width { grid-column: span 2; }
+        /* Stats Bento */
+        .stat-group { grid-column: span 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat-box { background: var(--w); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 12px; border: 1px solid var(--b); text-align: center; }
+        .stat-box p { font-size: 34px; font-weight: 800; color: var(--a); margin: 0; }
+        .stat-box small { font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--sub); letter-spacing: 0.8px; margin-top: 5px; }
         
-        button { background: var(--primary); color: white; cursor: pointer; border: none; text-transform: uppercase; font-weight: bold; font-size: 12px; letter-spacing: 1px; transition: 0.2s; }
-        button:hover { background: var(--accent); }
-        .export-btn { background: none; color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; }
-        .export-btn:hover { background: var(--accent); color: white; }
+        /* Actions */
+        .export-btn { background: none; color: var(--w); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: 0.2s; max-width: fit-content; margin-top: 10px; }
+        .export-btn:hover { background: rgba(255,255,255,0.1); }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; border-bottom: 2px solid var(--primary); padding: 10px; font-size: 12px; text-transform: uppercase; font-family: sans-serif; }
-        td { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; }
-        .roaster-name { font-family: sans-serif; font-weight: bold; text-transform: uppercase; font-size: 13px; color: var(--accent); }
+        /* Form Bento (Row 2) */
+        form { background: var(--w); padding: 25px; border-radius: 12px; border: 1px solid var(--b); grid-column: span 4; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        input, select { padding: 12px; border: 1px solid var(--b); border-radius: 8px; font-size: 13px; font-weight: 500; outline: none; transition: 0.2s; }
+        input:focus, select:focus { border-color: var(--a); }
+        
+        /* Large Highlighted Box */
+        .full-width { grid-column: span 4; }
+        input#name { font-size: 16px; font-weight: 700; border-width: 1px; color: var(--p); grid-column: span 2; }
+        
+        /* Small detail row */
+        input#roaster, select#country { grid-column: span 1; }
+        
+        /* Variety/Process row */
+        .variety-group { grid-column: span 2; display: grid; grid-template-columns: 2fr 1fr; gap: 8px; background: var(--light_v); padding: 10px; border-radius: 8px; }
+        input#variety, input#species { grid-column: span 1; border: none; }
+        input#species { color: var(--a); font-size: 11px; text-transform: uppercase; font-weight: 600; padding: 0 5px; background: none; cursor: default; }
+
+        input#altitude { grid-column: span 1; }
+        input#process { grid-column: span 1; }
+
+        button#addBtn { background: var(--p); color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; border: none; padding: 14px; cursor: pointer; border-radius: 8px; grid-column: span 4; font-size: 12px; margin-top: 10px; }
+        button#addBtn:hover { background: var(--a); }
+
+        /* Table (Display below Bento) */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; background: var(--w); border-radius: 12px; border: 1px solid var(--b); }
+        th { text-align: left; padding: 15px; font-size: 11px; text-transform: uppercase; color: var(--sub); font-weight: 700; letter-spacing: 1px; border-bottom: 1px solid var(--b); }
+        td { padding: 15px; border-bottom: 1px solid var(--b); font-size: 14px; font-weight: 500; color: #444; }
+        tr:last-child td { border-bottom: none; }
+        
+        .c-origin { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .c-roaster { font-size: 11px; color: var(--a); font-weight: 700; }
+        .c-species { font-size: 11px; font-weight: 700; color: var(--a); text-transform: uppercase; display: inline-block; background: var(--light_v); padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Coffee Passport</h1>
-    <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+<div class="bento-container">
+    <div class="bento-box header-title-box">
+        <h1>Coffee Passport</h1>
+        <button class="export-btn" onclick="exportToCSV()">Download CSV</button>
+    </div>
+
+    <div class="stat-group">
+        <div class="bento-box stat-box"><p id="stat-countries">0</p><small>Countries</small></div>
+        <div class="bento-box stat-box"><p id="stat-varieties">0</p><small>Varieties</small></div>
+        <div class="bento-box stat-box"><p id="stat-processes">0</p><small>Processes</small></div>
+    </div>
 </div>
 
-<div class="stats">
-    <div class="stat-box"><small>Countries</small><span id="stat-countries">0</span></div>
-    <div class="stat-box"><small>Varieties</small><span id="stat-varieties">0</span></div>
-    <div class="stat-box"><small>Processes</small><span id="stat-processes">0</span></div>
+<div class="bento-container">
+    <form id="coffeeForm">
+        <input type="text" id="name" placeholder="Coffee Name (e.g. Worka Sakaro)" required>
+        <input type="text" id="roaster" placeholder="Roaster" required>
+        
+        <select id="country" required>
+            <option value="" disabled selected>Select Origin</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Colombia">Colombia</option>
+            <option value="Ethiopia">Ethiopia</option>
+            <option value="Panama">Panama</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Malaysia">Malaysia</option>
+            <option value="Vietnam">Vietnam</option>
+            </select>
+        
+        <input type="text" id="region" placeholder="Region">
+        <input type="text" id="altitude" placeholder="Altitude">
+        
+        <div class="variety-group">
+            <input type="text" id="variety" placeholder="Variety (e.g. Gesha)" oninput="detectSpecies()" required>
+            <input type="text" id="species" placeholder="Auto" readonly tabindex="-1">
+        </div>
+        
+        <input type="text" id="process" placeholder="Process">
+        
+        <button type="submit" id="addBtn">Add Entry to Passport</button>
+    </form>
 </div>
-
-<form id="coffeeForm">
-    <input type="text" id="roaster" placeholder="Roaster (e.g. Apollo)" required>
-    <input type="text" id="name" placeholder="Coffee Name (e.g. Worka Sakaro)" required>
-    
-    <select id="country" required>
-        <option value="" disabled selected>Select Country</option>
-        <option value="Brazil">Brazil</option>
-        <option value="Colombia">Colombia</option>
-        <option value="Ethiopia">Ethiopia</option>
-        <option value="Honduras">Honduras</option>
-        <option value="Indonesia">Indonesia</option>
-        <option value="Kenya">Kenya</option>
-        <option value="Malaysia">Malaysia</option>
-        <option value="Mexico">Mexico</option>
-        <option value="Panama">Panama</option>
-        <option value="Peru">Peru</option>
-        <option value="Rwanda">Rwanda</option>
-        <option value="Thailand">Thailand</option>
-        <option value="Vietnam">Vietnam</option>
-        <option value="Yemen">Yemen</option>
-        </select>
-    
-    <input type="text" id="region" placeholder="Region (e.g. Yirgacheffe)">
-    <input type="text" id="altitude" placeholder="Altitude (e.g. 1950m)">
-    <input type="text" id="variety" placeholder="Variety (e.g. Sidra)" oninput="detectSpecies()">
-    <input type="text" id="species" placeholder="Species (Auto-detected)" readonly>
-    <input type="text" id="process" placeholder="Process (e.g. Carbonic Maceration)">
-    
-    <button type="submit" class="full-width">Add Entry</button>
-</form>
 
 <table id="coffeeTable">
     <thead>
         <tr>
-            <th>Origin / Roaster</th>
-            <th>Variety & Species</th>
+            <th>Name & Roaster</th>
+            <th>Origin & Region</th>
+            <th>Variety</th>
             <th>Process</th>
             <th>Altitude</th>
         </tr>
@@ -92,15 +122,15 @@
     const speciesMap = {
         'bourbon': 'Arabica', 'typica': 'Arabica', 'gesha': 'Arabica', 'geisha': 'Arabica', 
         'caturra': 'Arabica', 'catuai': 'Arabica', 'sl28': 'Arabica', 'sl34': 'Arabica',
-        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica',
-        'canephora': 'Robusta', 'conilon': 'Robusta', 'excelsa': 'Liberica', 'liberica': 'Liberica'
+        'heirloom': 'Arabica', 'pacamara': 'Arabica', 'castillo': 'Arabica', 'colombia': 'Arabica',
+        'sidra': 'Arabica', 'catimor': 'Hybrid', 'conilon': 'Robusta', 'canephora': 'Robusta'
     };
 
     let coffees = JSON.parse(localStorage.getItem('myCoffees')) || [];
 
     function detectSpecies() {
         const varInput = document.getElementById('variety').value.toLowerCase().trim();
-        document.getElementById('species').value = speciesMap[varInput] || "Arabica (Likely)";
+        document.getElementById('species').value = speciesMap[varInput] || "Arabica (Assumed)";
     }
 
     function updateUI() {
@@ -112,12 +142,9 @@
 
         coffees.forEach(c => {
             const row = `<tr>
-                <td>
-                    <div class="roaster-name">${c.roaster}</div>
-                    <strong>${c.name}</strong><br>
-                    <small>${c.country}, ${c.region}</small>
-                </td>
-                <td>${c.variety}<br><small style="color:var(--accent)">${c.species}</small></td>
+                <td><strong>${c.name}</strong><br><span class="c-roaster">${c.roaster}</span></td>
+                <td><div class="c-origin">${c.country}</div><small>${c.region}</small></td>
+                <td>${c.variety}<br><span class="c-species">${c.species}</span></td>
                 <td>${c.process}</td>
                 <td>${c.altitude}</td>
             </tr>`;
@@ -135,8 +162,8 @@
     document.getElementById('coffeeForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const newCoffee = {
-            roaster: document.getElementById('roaster').value,
             name: document.getElementById('name').value,
+            roaster: document.getElementById('roaster').value,
             country: document.getElementById('country').value,
             region: document.getElementById('region').value,
             altitude: document.getElementById('altitude').value,
@@ -153,15 +180,15 @@
 
     function exportToCSV() {
         if (coffees.length === 0) return alert("No data to export!");
-        let csv = "Roaster,Name,Country,Region,Altitude,Variety,Species,Process\n";
+        let csv = "Name,Roaster,Country,Region,Altitude,Variety,Species,Process\n";
         coffees.forEach(c => {
-            csv += `"${c.roaster}","${c.name}","${c.country}","${c.region}","${c.altitude}","${c.variety}","${c.species}","${c.process}"\n`;
+            csv += `"${c.name}","${c.roaster}","${c.country}","${c.region}","${c.altitude}","${c.variety}","${c.species}","${c.process}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'coffee_passport_export.csv';
+        a.download = 'coffee_passport_data.csv';
         a.click();
     }
 
